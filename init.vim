@@ -1,3 +1,4 @@
+
 " Key Mappings
 :inoremap jj <Esc>
 
@@ -10,27 +11,44 @@ nnoremap <C-H> <C-W><C-H>
 " Set UTF-8
 set encoding=utf-8
 
+" Set command window height
+set cmdheight=2
+
+" Set relative numbering
+set number
+set relativenumber
+
 " Plugin config
 call plug#begin('~/.vim/plugged')
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'pangloss/vim-javascript'
-Plug 'maxmellon/vim-jsx-pretty'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
-Plug 'dyng/ctrlsf.vim'
-Plug 'w0rp/ale'
-Plug 'sheerun/vim-polyglot'
-Plug 'Valloric/YouCompleteMe'
-Plug 'tpope/vim-dispatch'
-Plug 'Shougo/vimproc.vim', {'do' : 'make'}
-Plug 'OmniSharp/omnisharp-vim'
-Plug 'scrooloose/nerdtree'
-Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
-Plug 'prettier/vim-prettier', {
-  \ 'do': 'yarn install',
-  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'pangloss/vim-javascript'
+  Plug 'maxmellon/vim-jsx-pretty'
+  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
+  Plug 'dyng/ctrlsf.vim'
+  Plug 'w0rp/ale'
+  Plug 'sheerun/vim-polyglot'
+  Plug 'Valloric/YouCompleteMe'
+  Plug 'tpope/vim-dispatch'
+  Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+  Plug 'OmniSharp/omnisharp-vim'
+  Plug 'scrooloose/nerdtree'
+  Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
+  Plug 'prettier/vim-prettier', {
+    \ 'do': 'yarn install',
+    \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
+  Plug 'liuchengxu/eleline.vim'
+  Plug 'airblade/vim-gitgutter'
+  Plug 'tpope/vim-fugitive'
 
 call plug#end()
+
+"""""""""""""
+"Keybindings"
+"""""""""""""
+
+nnoremap <C-o> :NERDTreeToggle<CR>
+nnoremap <C-f> :FZF<CR>
 
 """"""""""""""
 "XMAL => XAML"
@@ -50,10 +68,29 @@ set expandtab
 """"""""""""""
 set nowrap
 
+"""""""""""""
+"Popup Color"
+"""""""""""""
+:highlight Pmenu ctermbg=49 guibg=49
+
+"""""""""""""""""""
+"Git Gutter Config"
+"""""""""""""""""""
+"let g:gitgutter_highlight_lines = 1
+let g:gitgutter_highlight_linenrs = 1
+
+""""""""""""""""""""
+"Status Line Config"
+""""""""""""""""""""
+set laststatus=2
+
+
 """""""""""""""""""""""
 "OmniSharp (C#) Config"
 """""""""""""""""""""""
-let g:OmniSharp_server_path = 'C:\Users\Kevin\OmniSharp-Roslyn\artifacts\publish\OmniSharp.Http.Driver\win7-x64\OmniSharp.exe'
+let g:OmniSharp_server_path = '%USERPROFILE%\OmniSharp-Roslyn\artifacts\publish\OmniSharp.Http.Driver\win7-x64\OmniSharp.exe'
+
+
 
 let g:python3_host_prog='C:\Program Files (x86)\Microsoft Visual Studio\Shared\Python37_64\python.exe'
 let g:ycm_server_python_interpreter='C:\Python27\python2.exe'
@@ -121,4 +158,5 @@ nnoremap <Leader>cf :OmniSharpCodeFormat<CR>
 " Start the omnisharp server for the current solution
 nnoremap <Leader>ss :OmniSharpStartServer<CR>
 nnoremap <Leader>sp :OmniSharpStopServer<CR>
+
 
