@@ -13,6 +13,9 @@ nnoremap <S-Tab> :bprevious<Cr>
 noremap <silent> <C-S-Left> :vertical resize +5<CR>
 noremap <silent> <C-S-Right> :vertical resize -5<CR>
 
+command! -bang -range=% -complete=file -nargs=* W <line1>,<line2>write<bang> <args>
+command! -bang Q quit<bang>
+
 " Set UTF-8
 set encoding=utf-8
  
@@ -30,8 +33,10 @@ call plug#begin('~/.vim/plugged')
   Plug 'pangloss/vim-javascript'
   Plug 'maxmellon/vim-jsx-pretty'
 
-  " Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
-  Plug 'ctrlpvim/ctrlp.vim'
+  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all'  }
+  Plug 'junegunn/fzf.vim'
+
+  " Plug 'ctrlpvim/ctrlp.vim'
   Plug 'dyng/ctrlsf.vim'
   Plug 'dense-analysis/ale'
   Plug 'sheerun/vim-polyglot'
@@ -53,19 +58,86 @@ call plug#begin('~/.vim/plugged')
   Plug 'Xuyuanp/nerdtree-git-plugin'
   Plug 'scrooloose/nerdcommenter'
   Plug 'joshdick/onedark.vim'
-  Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'   }
 
+  Plug 'tpope/vim-surround'
 call plug#end()
+
+
+"""""""""""""""""
+"coc-nvim config"
+"""""""""""""""""
+" Use K to show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+"""""""""""""""""""""
+" floating terminal "
+"""""""""""""""""""""
+"Accepts one optional function as a parameter
+function! CreateCenteredFloatingWindow(...)
+    let width = min([&columns - 4, max([80, &columns - 20])])
+    let height = min([&lines - 4, max([20, &lines - 10])])
+    let top = ((&lines - height) / 2) - 1
+    let left = (&columns - width) / 2
+    let opts = {'relative': 'editor', 'row': top, 'col': left, 'width': width, 'height': height, 'style': 'minimal'}
+
+    let top = "╭" . repeat("─", width - 2) . "╮"
+    let mid = "│" . repeat(" ", width - 2) . "│"
+    let bot = "╰" . repeat("─", width - 2) . "╯"
+    let lines = [top] + repeat([mid], height - 2) + [bot]
+    let s:buf = nvim_create_buf(v:false, v:true)
+    call nvim_buf_set_lines(s:buf, 0, -1, v:true, lines)
+    call nvim_open_win(s:buf, v:true, opts)
+    set winhl=Normal:Floating
+    let opts.row += 1
+    let opts.height -= 2
+    let opts.col += 2
+    let opts.width -= 4
+    call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
+    au BufWipeout <buffer> exe 'bw '.s:buf
+    if a:0 > 1
+      call a:1()
+    endif
+endfunction
+
+function! OpenTerminal()
+  call termopen("pwsh")
+endfunction
+
+function! OnOpentCtrlP()
+endfunction
+
+let $FZF_DEFAULT_OPTS='--layout=reverse'
+let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
+
+command! -nargs=0 FloatingTerminal call CreateCenteredFloatingWindow(function('OpenTerminal'))
+"command! -nargs=0 FloatingCtrlP call CreateCenteredFloatingWindow(function('OnOpentCtrlP'))
+
+nnoremap <Leader><Leader>i :FloatingTerminal<Cr>
+:tnoremap <Esc> <C-\><C-n>
+
 
 """"""""""""""""""""""""""""
 "Keybindings Plugin related"
 """"""""""""""""""""""""""""
-
 nnoremap <C-o> :NERDTreeToggle<CR>
 " nnoremap <C-f> :FZF<CR>
-nnoremap <C-P> :CtrlP<CR>
+nnoremap <C-P> :FZF<CR>
 nmap <C-_> <Plug>NERDCommenterToggle
 vmap <C-_> <Plug>NERDCommenterToggle<CR>gv
+
+
+"""""""""""""""""""""
+"Prettier formatting"
+"""""""""""""""""""""
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
 
 """"""""""""""
 "XMAL => XAML"
@@ -95,6 +167,7 @@ colorscheme onedark
 let g:airline#extensions#tabline#enabled=1
 set cursorline
 :hi Visual term=reverse cterm=reverse guibg=Grey
+:hi Search cterm=NONE ctermfg=grey ctermbg=blue
 
 """""""""""""""""
 "Terminal Colors"
@@ -103,7 +176,7 @@ let g:terminal_color_4 = '#ff0000'
 let g:terminal_color_5 = 'green'
 
 """"""""""""
-"Popup Color"
+"Popup"
 """""""""""""
 :highlight Pmenu ctermbg=49 guibg=49
 
@@ -133,7 +206,7 @@ let g:NERDCompactSexyComs = 1
 """""""""""""""""""""""
 "OmniSharp (C#) Config"
 """""""""""""""""""""""
-let g:OmniSharp_server_path = OMNISHARP_PATH
+let g:OmniSharp_server_path = STDIO_PATH_HERE
 
 let g:python3_host_prog='C:\Python38\python.exe'
 let g:ycm_server_python_interpreter='C:\Python27\python.exe'
@@ -142,7 +215,7 @@ let g:OmniSharp_server_stdio = 1
 let g:OmniSharp_selector_ui = ''
 let g:OmniSharp_timeout = 5
 "omnisharp_response_timeout": 500
-set completeopt=longest,menuone,preview
+"set completeopt=longest,menuone,preview
 let g:OmniSharp_highlight_types = 3
 " let g:OmniSharp_server_stdio_quickload = 1
 
@@ -201,3 +274,5 @@ nnoremap <Leader>cf :OmniSharpCodeFormat<CR>
 " Start the omnisharp server for the current solution
 nnoremap <Leader>ss :OmniSharpStartServer<CR>
 nnoremap <Leader>sp :OmniSharpStopServer<CR>
+
+
