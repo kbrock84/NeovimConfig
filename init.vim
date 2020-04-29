@@ -233,24 +233,6 @@ let g:NERDSpaceDelims = 1
 " Use compact syntax for prettified multi-line comments
 let g:NERDCompactSexyComs = 1
 
-"""""""""""""""""""""""
-"OmniSharp (C#) Config"
-"""""""""""""""""""""""
-let g:OmniSharp_server_path = 'C:\Users\kevin.brock\stdioproxy\bin\Debug\netcoreapp2.1\win-x64\stdioproxy.exe'
-
-let g:python3_host_prog='C:\Python38\python.exe'
-let g:ycm_server_python_interpreter='C:\Python27\python.exe'
-
-let g:OmniSharp_server_stdio = 1
-let g:OmniSharp_selector_ui = ''
-let g:OmniSharp_timeout = 5
-"omnisharp_response_timeout": 500
-"set completeopt=longest,menuone,preview
-let g:OmniSharp_highlight_types = 3
-" let g:OmniSharp_server_stdio_quickload = 1
-
-let g:omnicomplete_fetch_full_documentation = 1
-
 let g:ale_linters = {
 \ 'javascript': ['eslint', 'flow-language-server'] 
 \}
